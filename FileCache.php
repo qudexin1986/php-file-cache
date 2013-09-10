@@ -100,7 +100,7 @@ class FileCache {
 		return $total_size;
 	}
 
-	function memoized_function_call($function, array $args) {
+	function memoized_function_call($function, array $args, $use_cache=true) {
 		$this->debug("memoized function call: <i>$function</i> with arguments:, <pre>".print_r($args, true)."</pre>");
 		$t1 = microtime(true);
 		# if one of the args is an unserializable object, well, just strip it out
@@ -112,7 +112,7 @@ class FileCache {
 			}
 		}
 		$key = [$function, $serialized_args];
-		if (null===($result = $this->load($key))) {
+		if (!$use_cache or null===($result = $this->load($key))) {
 			$result = call_user_func_array($function, $args);
 			$this->save($key, $result);
 			$this->last_memoized_function_call_hit_cache = false;
