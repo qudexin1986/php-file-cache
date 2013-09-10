@@ -8,7 +8,7 @@ class FileCache {
 		if (!is_dir($dir)) {
 			mkdir($dir, 0777, true);
 		}
-		$testpath = $this->join_paths([$dir]);
+		$testpath = $this->join_paths(array($dir));
 		if (!is_dir($dir) or ! is_writeable($testpath)) {
 			throw new Exception("Directory $dir isn't writeable.");
 		}
@@ -56,7 +56,7 @@ class FileCache {
 
 	function filepath_for_key($key) {
 		$key = md5(serialize($key));
-		$path = $this->join_paths([$this->dir, md5($key)]);
+		$path = $this->join_paths(array($this->dir, md5($key)));
 		$this->debug("filepath for ".print_r($key, true)." is ".$path);
 		return $path;
 	}
@@ -64,7 +64,7 @@ class FileCache {
 	function purge() {
 		$dh = opendir($this->dir);
 		while (false !== ($filename = readdir($dh))) {
-			$path = $this->join_paths([$this->dir, $filename]);
+			$path = $this->join_paths(array($this->dir, $filename));
 			if (is_file($path)) {
 				unlink($path);
 			}
@@ -88,7 +88,7 @@ class FileCache {
 	}
 
 	function file_list() {
-		return glob($this->join_paths([$this->dir, '*']));
+		return glob($this->join_paths(array($this->dir, '*')));
 	}
 
 	function filesize() {
@@ -104,14 +104,14 @@ class FileCache {
 		$this->debug("memoized function call: <i>$function</i> with arguments:, <pre>".print_r($args, true)."</pre>");
 		$t1 = microtime(true);
 		# if one of the args is an unserializable object, well, just strip it out
-		$serialized_args = [];
+		$serialized_args = array();
 		foreach ($args as $key=>$arg) {
 			try {
 				$serialized_args[$key] = serialize($arg);
 			} catch (Exception $e) {
 			}
 		}
-		$key = [$function, $serialized_args];
+		$key = array($function, $serialized_args);
 		if (null===($result = $this->load($key))) {
 			$result = call_user_func_array($function, $args);
 			$this->save($key, $result);

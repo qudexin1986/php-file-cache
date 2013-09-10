@@ -21,8 +21,8 @@ assert($cache->count()===1);
 
 assert($cache->load('color')===null);
 
-$array  = ['a'=>'apple', 'b'=>'banana'];
-$array2 = ['a'=>'apple', 'b'=>'bananas'];
+$array  = array('a'=>'apple', 'b'=>'banana');
+$array2 = array('a'=>'apple', 'b'=>'bananas');
 
 $cache->save('testarray', $array);
 
@@ -43,10 +43,10 @@ function add_two_numbers($a, $b) {
 	return $a + $b;
 }
 
-assert($cache->load(['add_two_numbers', [1, 5]])===null);
-assert($cache->memoized_function_call('add_two_numbers', [1, 5])===6);
+assert($cache->load(['add_two_numbers', array(1, 5)])===null);
+assert($cache->memoized_function_call('add_two_numbers', array(1, 5))===6);
 assert($cache->last_memoized_function_call_hit_cache===false);
-assert($cache->memoized_function_call('add_two_numbers', [1, 5])===6);
+assert($cache->memoized_function_call('add_two_numbers', array(1, 5))===6);
 assert($cache->last_memoized_function_call_hit_cache===true);
 assert($cache->filesize()===4);
 
